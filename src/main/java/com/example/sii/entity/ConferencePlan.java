@@ -1,6 +1,5 @@
-package com.example.sii.Models;
+package com.example.sii.entity;
 
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class ConferencePlan {

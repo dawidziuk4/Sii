@@ -1,6 +1,7 @@
-package com.example.sii.Models;
+package com.example.sii.entity;
 
 public class Subject {
+    private Long id;
     private String topic;
     private int num_of_participants;
 
