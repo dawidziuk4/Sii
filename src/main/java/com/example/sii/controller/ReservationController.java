@@ -1,7 +1,11 @@
 package com.example.sii.controller;
 
+import com.example.sii.dto.ReservationInfo;
+import com.example.sii.dto.ReservationRequest;
 import com.example.sii.entity.Reservation;
+import com.example.sii.entity.User;
 import com.example.sii.repository.ReservationRepository;
+import com.example.sii.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +65,42 @@ public class ReservationController {
         {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @DeleteMapping("reservations/{id}")
+    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id)
+    {
+        try{
+            Optional<Reservation> reserv = reservRepo.findById(id);
+            if (reserv.isPresent())
+            {
+                reservRepo.delete(reserv.get());
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @Autowired
+    private UserRepository userRepo;
+    @PostMapping("/makeReservation")
+    public User makeReservation(@RequestBody ReservationRequest request)
+    {
+        return userRepo.save(request.getUser());
+    }
+
+    @GetMapping("/findAllReservations")
+    public List<User> findAllReservations(){
+        return userRepo.findAll();
+    }
+
+    @GetMapping("/getSinglePrelectionInfo/{prelection}")
+    public List<ReservationInfo> getSinglePrelectionInfo(@PathVariable int prelectionNr){
+        return userRepo.getSinglePrelectionInfo(prelectionNr);
+    }
+
+    @GetMapping("/getAllPrelectionInfo")
+    public List<ReservationInfo> getAllPrelectionInfo(){
+        return userRepo.getAllPrelectionsInfo();
     }
 
 }

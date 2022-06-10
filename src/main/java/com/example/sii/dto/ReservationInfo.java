@@ -1,23 +1,18 @@
-package com.example.sii.entity;
+package com.example.sii.dto;
 
+import com.example.sii.entity.Reservation;
+import com.example.sii.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity
-@Table(name="tbl_reservation")
-public class Reservation{
+public class ReservationInfo {
 
-    @Id
-    private Long id;
+    private String login;
     private int prelection;
-
 }
-

@@ -63,4 +63,10 @@ public class UserController {
         }
     }
 
+    @GetMapping("users/login")
+    public ResponseEntity<User> findUserByLogin(@RequestParam String login)
+    {
+        return new ResponseEntity<User>(userRepo.findByLogin(login),HttpStatus.OK);
+    }
+
 }
