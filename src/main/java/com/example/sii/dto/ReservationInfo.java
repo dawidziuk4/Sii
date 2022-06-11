@@ -15,4 +15,5 @@ public class ReservationInfo {
 
     private String login;
     private int prelection;
+    //private int topic;
 }

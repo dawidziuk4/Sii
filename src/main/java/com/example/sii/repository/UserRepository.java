@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -23,9 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT login FROM User WHERE login =?1")
     public String loginIsTaken(String login);
 
-    @Query("SELECT r.prelection FROM User u JOIN u.reservations r WHERE u.login=?1")
-    public List<Integer> findAllReserveredPrelectionByUser(Long id);
+    @Query("SELECT r.prelection FROM User u JOIN u.reservations r WHERE u.login=?1 AND u.email=?2")
+    public List<Integer> findAllReservedPrelectionByUser(String login, String email);
 
-    @Query("UPDATE User SET reservations = ?2 WHERE id=?1")
-    void updateReservations(Long id, List<Reservation> reservations);
 }

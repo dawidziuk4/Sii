@@ -14,7 +14,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT COUNT(r.id) FROM Reservation r WHERE r.prelection = ?1")
     public int countPrelectionAttendance(int prelection);
 
-    @Modifying
-    @Query(value = "INSERT INTO Reservation(prelection) VALUES(?1)", nativeQuery = true)
-    public void addReservation(int prelection);
+
 }

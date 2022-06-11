@@ -5,10 +5,13 @@ import com.example.sii.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -56,21 +59,33 @@ public class UserController {
            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
        }
     }
-    @PutMapping("user/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user)
+    @PatchMapping("/user/{login}")
+    public ResponseEntity<User> updateUser(@RequestBody Map<Object,Object> fields,@PathVariable String login)
     {
-        try{
-            return new ResponseEntity<User>(userRepo.save(user),HttpStatus.OK);
-        }catch(Exception e)
-        {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        User user = userRepo.findByLogin(login);
+
+            fields.forEach((key, value) -> {
+                Field field = ReflectionUtils.findField(User.class, (String) key);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, user, value);
+            });
+            return new ResponseEntity<User>(userRepo.save(user), HttpStatus.OK);
         }
+
+    @GetMapping("/user/{login}&{email}")
+    public List<Integer> getUsersReservations(@PathVariable String login,@PathVariable String email)
+    {
+            return userRepo.findAllReservedPrelectionByUser(login,email);
     }
 
     @GetMapping("users/login")
     public ResponseEntity<User> findUserByLogin(@RequestParam String login)
     {
-        return new ResponseEntity<User>(userRepo.findByLogin(login),HttpStatus.OK);
+        if(!userRepo.findByLogin(login).toString().isEmpty())
+            return new ResponseEntity<User>(userRepo.findByLogin(login),HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 

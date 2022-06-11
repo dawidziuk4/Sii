@@ -95,7 +95,7 @@ public class ReservationController {
         return userRepo.getSinglePrelectionInfo(prelectionNr);
     }
 
-    @GetMapping("/getAllPrelectionInfo")
+    @GetMapping("/getAllReservationsInfo")
     public List<ReservationInfo> getAllPrelectionInfo(){
         return userRepo.getAllPrelectionsInfo();
     }
@@ -105,23 +105,29 @@ public class ReservationController {
 
         User user = userRepo.findByLogin(login);
         //CHECKING IF THERE IS SPACE ON THIS PRELECTION
-        int prelection = reservation.getPrelection();
-        if(reservRepo.countPrelectionAttendance(prelection) >= 5)
-            return "No more free spots on this prelection";
-            if(user.getReservations().isEmpty())
+
+            int prelection = reservation.getPrelection();
+            if (reservRepo.countPrelectionAttendance(prelection) >= 5)
+                return "No more free spots on this prelection";
+            if (user.getReservations().isEmpty())
                 user.getReservations().add(reservation);
-            else{
+            else {
                 int size = user.getReservations().size();
-                for(int i=0;i<size ;i++)
-                {
-                    if(reservation.getPrelection() == user.getReservations().get(i).getPrelection())
+                for (int i = 0; i < size; i++) {
+                    if (reservation.getPrelection() == user.getReservations().get(i).getPrelection())
                         return "Already made reservation in this time.";
                     else
                         user.getReservations().add(reservation);
                 }
             }
             userRepo.save(user);
-        return user.toString();
+            return user.toString();
+
+    }
+    @GetMapping("/prelections/{nr}")
+    public int numOfAttendeesOfSinglePrelection(@PathVariable int nr)
+    {
+        return reservRepo.countPrelectionAttendance(nr);
     }
 
 }

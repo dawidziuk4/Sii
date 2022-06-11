@@ -19,6 +19,7 @@ public class Reservation{
     @GeneratedValue
     private Long id;
     private int prelection;
+    //private int topic;
 
 }
 
