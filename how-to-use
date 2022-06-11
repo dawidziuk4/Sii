@@ -1,0 +1,50 @@
+WIP
+How to use:
+
+First of all we want to create users (every needed URL addresses and queries are given below). Anytime there is a possibility to check plan of a conference plan.
+When user is successfully created, they can add a reservation to a chosen prelection. User has a possibility to change email anytime.  
+
+
+POST /users 
+Adding users to database. JSON body example:
+{
+	"login":"dawid",
+	"email":"email@wp.pl"
+}
+
+GET /users
+Displays all users in database.
+
+GET /plan
+Displays plan of a conference.
+
+GET /users/{id}
+Displays user info (including their reservations) that has id = {id}
+
+GET /users/{login}
+Displays user info (including their reservations) that has login = {login}
+
+GET /user/{login}&{email}
+Displays reserved prelections for user
+
+GET /getAllReservationsInfo
+Displays all reservations.
+
+PUT /users/{id}
+Updates user that has id = {id}
+
+PUT /user/{login}/makeReservation
+Make reservation for user {login}. JSON body example:
+{    
+        "prelection": 1
+}
+
+PATCH /user/{login}
+Update email address. JSON body example:
+{
+  "email" : "newEmail@gmail.com"
+}
+
+
+
+
