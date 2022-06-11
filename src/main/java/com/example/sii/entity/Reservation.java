@@ -16,6 +16,7 @@ import javax.persistence.*;
 public class Reservation{
 
     @Id
+    @GeneratedValue
     private Long id;
     private int prelection;
 

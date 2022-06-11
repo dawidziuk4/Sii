@@ -17,16 +17,15 @@ import java.util.List;
 public class MainController {
 
     @GetMapping("/plan")
-    public ResponseEntity<Plan> getPlan()
+    public String getPlan()
     {
+        Plan plan = new Plan();
         try{
-
-            Plan plan = new Plan();
-            return new ResponseEntity<Plan>(plan,HttpStatus.OK);
+            return plan.toString();
 
         }catch (Exception e)
         {
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
+            return plan.toString();
         }
     }
 }

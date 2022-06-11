@@ -11,11 +11,12 @@ public class Plan {
 
     @Override
     public String toString() {
-        return "Plan{" +
-                "topics=" + topics +
-                ", prelections=" + prelections +
-                ", times=" + times +
-                '}';
+        String string = "Schedule of IT conferecne 01.06.2022."+'\n'+"Topics list: "+topics+'\n'+"Number of prelections: "+prelections.size()
+                +'\n'+"Prelection #1 start at "+times.get(0)+" ends at "+times.get(1)
+                +'\n'+"Prelection #2 start at "+times.get(2)+" ends at "+times.get(3)
+                +'\n'+"Prelection #3 start at "+times.get(4)+" ends at "+times.get(5);
+        return string;
+
     }
 
     public Plan() {

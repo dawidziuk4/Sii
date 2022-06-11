@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,11 +83,7 @@ public class ReservationController {
     }
     @Autowired
     private UserRepository userRepo;
-    @PostMapping("/makeReservation")
-    public User makeReservation(@RequestBody ReservationRequest request)
-    {
-        return userRepo.save(request.getUser());
-    }
+
 
     @GetMapping("/findAllReservations")
     public List<User> findAllReservations(){
@@ -101,6 +98,30 @@ public class ReservationController {
     @GetMapping("/getAllPrelectionInfo")
     public List<ReservationInfo> getAllPrelectionInfo(){
         return userRepo.getAllPrelectionsInfo();
+    }
+
+    @PutMapping("/user/{login}/makeReservation")
+    public String makeReservation(@RequestBody Reservation reservation, @PathVariable String login) {
+
+        User user = userRepo.findByLogin(login);
+        //CHECKING IF THERE IS SPACE ON THIS PRELECTION
+        int prelection = reservation.getPrelection();
+        if(reservRepo.countPrelectionAttendance(prelection) >= 5)
+            return "No more free spots on this prelection";
+            if(user.getReservations().isEmpty())
+                user.getReservations().add(reservation);
+            else{
+                int size = user.getReservations().size();
+                for(int i=0;i<size ;i++)
+                {
+                    if(reservation.getPrelection() == user.getReservations().get(i).getPrelection())
+                        return "Already made reservation in this time.";
+                    else
+                        user.getReservations().add(reservation);
+                }
+            }
+            userRepo.save(user);
+        return user.toString();
     }
 
 }

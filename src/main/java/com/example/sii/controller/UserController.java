@@ -18,13 +18,17 @@ public class UserController {
     UserRepository userRepo;
 
     @PostMapping("/users")
-    public ResponseEntity<User> save(@RequestBody User user){
-        try {
-            return new ResponseEntity<>(userRepo.save(user), HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public String save(@RequestBody User user){
+            if(userRepo.loginIsTaken(user.getLogin())==null)
+            {
+                userRepo.save(user);
+                return user.toString();
+            }
+            else{
+                return "Login is already taken.";
+            }
     }
+
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers()
     {
@@ -68,5 +72,6 @@ public class UserController {
     {
         return new ResponseEntity<User>(userRepo.findByLogin(login),HttpStatus.OK);
     }
+
 
 }

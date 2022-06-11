@@ -1,6 +1,7 @@
 package com.example.sii.repository;
 
 import com.example.sii.dto.ReservationInfo;
+import com.example.sii.entity.Reservation;
 import com.example.sii.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public List<ReservationInfo> getAllPrelectionsInfo();
 
     public User findByLogin(String login);
+
+    @Query("SELECT login FROM User WHERE login =?1")
+    public String loginIsTaken(String login);
+
+    @Query("SELECT r.prelection FROM User u JOIN u.reservations r WHERE u.login=?1")
+    public List<Integer> findAllReserveredPrelectionByUser(Long id);
+
+    @Query("UPDATE User SET reservations = ?2 WHERE id=?1")
+    void updateReservations(Long id, List<Reservation> reservations);
 }
