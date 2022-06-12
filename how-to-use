@@ -4,6 +4,9 @@ How to use:
 First of all we want to create users (every needed URL addresses and queries are given below). Anytime there is a possibility to check plan of a conference plan.
 When user is successfully created, they can add a reservation to a chosen prelection. User has a possibility to change email anytime.  
 
+{pelection},{id} is represented by an integer.
+{login},{email} is represented by a string.
+
 
 POST /users 
 Adding users to database. JSON body example:
@@ -44,7 +47,15 @@ Update email address. JSON body example:
 {
   "email" : "newEmail@gmail.com"
 }
+GET /getPrelectionInfo/{prelection}
+Displays info about users attending prelection = {pelection}
 
+GET /prelections
+Displays percantage of antendence of all prelections.
 
+GET /prelection/{prelection}
+Displays percantage of antendence of a single prelecton.
 
+DELETE user/{login}/deleteReservation/{prelection}
+Deletes users reservation for a prelection.
 
