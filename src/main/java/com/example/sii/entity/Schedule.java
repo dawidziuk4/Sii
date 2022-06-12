@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Plan {
+public class Schedule {
     private List<String> topics =  new ArrayList<String>(3) ;;
     private List<Integer> prelections = new ArrayList<Integer>(3) ;
     private List<Time> times = new ArrayList<Time>(6) ;
@@ -19,7 +19,7 @@ public class Plan {
 
     }
 
-    public Plan() {
+    public Schedule() {
         topics.add("Topic number 1");
         topics.add("Topic number 2");
         topics.add("Topic number 3");

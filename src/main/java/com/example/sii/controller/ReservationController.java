@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,46 +19,13 @@ import java.util.Optional;
 @RestController
 public class ReservationController {
 
-
     @Autowired
     ReservationRepository reservRepo;
 
-    @PostMapping("/reservations")
-    public ResponseEntity<Reservation> save(@RequestBody Reservation reservation){
-        try {
-            return new ResponseEntity<>(reservRepo.save(reservation), HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> getAllReservations()
-    {
-        try{
-            List<Reservation> list = reservRepo.findAll();
-            if(list.isEmpty())
-            {
-                return new ResponseEntity<List<Reservation>>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<List<Reservation>>(list,HttpStatus.OK);
+    @Autowired
+    private UserRepository userRepo;
 
-        }catch (Exception e)
-        {
-            return new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @GetMapping("/reservations/{id}")
-    public ResponseEntity<Reservation> getReservation(@PathVariable Long id)
-    {
-        Optional<Reservation> user = reservRepo.findById(id);
-        if(user.isPresent()){
-            return new ResponseEntity<Reservation>(user.get(), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-    @PutMapping("reservations/{id}")
+    @PutMapping("/reservations/{id}")
     public ResponseEntity<Reservation> updateReservation(@RequestBody Reservation user)
     {
         try{
@@ -67,32 +35,10 @@ public class ReservationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @DeleteMapping("reservations/{id}")
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id)
-    {
-        try{
-            Optional<Reservation> reserv = reservRepo.findById(id);
-            if (reserv.isPresent())
-            {
-                reservRepo.delete(reserv.get());
-            }
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @Autowired
-    private UserRepository userRepo;
 
-
-    @GetMapping("/findAllReservations")
-    public List<User> findAllReservations(){
-        return userRepo.findAll();
-    }
-
-    @GetMapping("/getSinglePrelectionInfo/{prelection}")
-    public List<ReservationInfo> getSinglePrelectionInfo(@PathVariable int prelectionNr){
-        return userRepo.getSinglePrelectionInfo(prelectionNr);
+    @GetMapping("/getPrelectionInfo/{prelection}")
+    public List<ReservationInfo> getSinglePrelectionInfo(@PathVariable int prelection){
+        return userRepo.getSinglePrelectionInfo(prelection);
     }
 
     @GetMapping("/getAllReservationsInfo")
@@ -108,26 +54,71 @@ public class ReservationController {
 
             int prelection = reservation.getPrelection();
             if (reservRepo.countPrelectionAttendance(prelection) >= 5)
-                return "No more free spots on this prelection";
-            if (user.getReservations().isEmpty())
+                return "No more free spots on this prelection.";
+
+            //IF USER HAS NO RESERVATIONS
+            if (user.getReservations().isEmpty()) {
                 user.getReservations().add(reservation);
-            else {
+                try {
+                    user.sendEmail();
+                } catch (IOException e) {
+                    System.err.println("Error while saving to a file.");
+                }
+
+            }
+            else { //IF USER HAS NO RESERVATIONS
                 int size = user.getReservations().size();
-                for (int i = 0; i < size; i++) {
+                for (int i = 0; i < size; i++) { //CHECK IF USER CAN RESERVE A SPOT
                     if (reservation.getPrelection() == user.getReservations().get(i).getPrelection())
                         return "Already made reservation in this time.";
                     else
+                    {
                         user.getReservations().add(reservation);
+                        try {
+                            user.sendEmail();
+                        }catch (IOException e){
+                            System.err.println("Error while saving to a file.");
+                        }
+
+                    }
+
                 }
             }
             userRepo.save(user);
             return user.toString();
 
     }
-    @GetMapping("/prelections/{nr}")
-    public int numOfAttendeesOfSinglePrelection(@PathVariable int nr)
+    @DeleteMapping("user/{login}/deleteReservation/{prelection}")
+    public ResponseEntity<Reservation> deleteReservation(@PathVariable String login,@PathVariable int prelection) {
+
+            Long id = reservRepo.findIdByPrelectionAndLogin(prelection, login);
+            Optional<Reservation> reserv = reservRepo.findById(id);
+            if(reserv.isPresent()){
+                reservRepo.delete(reserv.get());
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @GetMapping("/prelection/{nr}")
+    public String numOfAttendeesOfSinglePrelection(@PathVariable int nr)
     {
-        return reservRepo.countPrelectionAttendance(nr);
+        float number =reservRepo.countPrelectionAttendance(nr)/4f*100;
+        String string = number+"%";
+        return string;
+    }
+
+    @GetMapping("/prelections")
+    public String numOfAttendeesOfAllPrelections()
+    {
+        String string ="";
+        for(int i=0;i<3;i++)
+        {
+             float number = reservRepo.countPrelectionAttendance(i)/4f*100;
+             string += "Prelection #"+i+" has "+number + "%\n";
+
+        }
+        return string;
     }
 
 }
