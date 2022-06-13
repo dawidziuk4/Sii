@@ -1,0 +1,68 @@
+WIP
+How to use:
+
+First of all we want to create users (every needed URL addresses and queries are given below). Anytime there is a possibility to check plan of a conference plan.
+When user is successfully created, they can add a reservation to a chosen prelection. User has a possibility to change email anytime.  
+
+{pelection},{id} is represented by an integer.
+{login},{email} is represented by a string.
+
+
+POST /users 
+Adding users to database. JSON body example:
+{
+	"login":"dawid",
+	"email":"email@wp.pl"
+}
+
+GET /users
+Displays all users in database.
+
+GET /plan
+Displays plan of a conference.
+
+GET /users/{id}
+Displays user info (including their reservations) that has id = {id}
+
+GET /users/{login}
+Displays user info (including their reservations) that has login = {login}
+
+GET /user/{login}&{email}
+Displays reserved prelections for user
+
+GET /getAllReservationsInfo
+Displays all reservations.
+
+PUT /users/{id}
+Updates user that has id = {id}
+
+PUT /user/{login}/makeReservation
+Make reservation for user {login}. JSON body example:
+{    
+        "prelection": 1,
+	"topic": 1
+}
+
+PATCH /user/{login}
+Update email address. JSON body example:
+{
+  "email" : "newEmail@gmail.com"
+}
+GET /getPrelectionInfo/{prelection}
+Displays info about users attending prelection = {pelection}
+
+GET /prelections
+Displays percantage of antendence of all prelections.
+
+GET /topic/{topic}
+Displays percantage of chosen topic.
+
+GET /topic
+Displays percantage of chosen topics.
+
+GET /prelection/{prelection}
+Displays percantage of antendence of a single prelecton.
+
+DELETE user/{login}/deleteReservation/{prelection}
+Deletes users reservation for a prelection.
+
