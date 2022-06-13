@@ -38,7 +38,9 @@ Updates user that has id = {id}
 
 PUT /user/{login}/makeReservation
 Make reservation for user {login}. JSON body example:
-{    
+{   
+	"login":"dawid",
+	"email":"email@wp.pl",
         "prelection": 1,
 	"topic": 1
 }
