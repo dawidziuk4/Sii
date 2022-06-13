@@ -36,8 +36,8 @@ Displays all reservations.
 PUT /users/{id}
 Updates user that has id = {id}
 
-PUT /user/{login}/makeReservation
-Make reservation for user {login}. JSON body example:
+PUT /users/makeReservation
+Make reservation for user. JSON body example:
 {   
 	"login":"dawid",
 	"email":"email@wp.pl",
