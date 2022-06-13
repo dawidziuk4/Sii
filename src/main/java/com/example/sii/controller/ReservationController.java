@@ -1,7 +1,6 @@
 package com.example.sii.controller;
 
 import com.example.sii.dto.ReservationInfo;
-import com.example.sii.dto.ReservationRequest;
 import com.example.sii.entity.Reservation;
 import com.example.sii.entity.User;
 import com.example.sii.repository.ReservationRepository;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +18,7 @@ import java.util.Optional;
 public class ReservationController {
 
     @Autowired
-    ReservationRepository reservRepo;
+    private ReservationRepository reservRepo;
 
     @Autowired
     private UserRepository userRepo;
@@ -42,8 +40,8 @@ public class ReservationController {
     }
 
     @GetMapping("/getAllReservationsInfo")
-    public List<ReservationInfo> getAllPrelectionInfo(){
-        return userRepo.getAllPrelectionsInfo();
+    public List<ReservationInfo> getAllReservationsInfo(){
+        return userRepo.getAllRservationsInfo();
     }
 
     @PutMapping("/user/{login}/makeReservation")
@@ -112,10 +110,31 @@ public class ReservationController {
     public String numOfAttendeesOfAllPrelections()
     {
         String string ="";
-        for(int i=0;i<3;i++)
+        for(int i=1;i<4;i++)
         {
              float number = reservRepo.countPrelectionAttendance(i)/4f*100;
              string += "Prelection #"+i+" has "+number + "%\n";
+
+        }
+        return string;
+    }
+
+    @GetMapping("/topic/{nr}")
+    public String numOfAttendeesOfSingleTopic(@PathVariable int nr)
+    {
+        float number =(float)reservRepo.countChosenTopic(nr)/reservRepo.count()*100;
+        String string = number+"%";
+        return string;
+    }
+
+    @GetMapping("/topics")
+    public String numOfAttendeesOfAllTopics()
+    {
+        String string ="";
+        for(int i=1;i<4;i++)
+        {
+            float number = (float)reservRepo.countChosenTopic(i)/ reservRepo.count()*100;
+            string += "Topic #"+i+" has "+number + "%\n";
 
         }
         return string;
