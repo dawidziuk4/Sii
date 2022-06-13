@@ -2,7 +2,7 @@ WIP
 How to use:
 
 First of all we want to create users (every needed URL addresses and queries are given below). Anytime there is a possibility to check plan of a conference plan.
-When user is successfully created, they can add a reservation to a chosen prelection. User has a possibility to change email anytime.  
+When user is successfully created, they can add a reservation to a chosen prelection. User has a possibility to change email and delete reservation anytime.  
 
 {pelection},{id} is represented by an integer.
 {login},{email} is represented by a string.
