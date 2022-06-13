@@ -78,7 +78,7 @@ public class UserController {
             return userRepo.findAllReservedPrelectionByUser(login,email);
     }
 
-    @GetMapping("users/login")
+    @GetMapping("users/{login}")
     public ResponseEntity<User> findUserByLogin(@RequestParam String login)
     {
         if(!userRepo.findByLogin(login).toString().isEmpty())
