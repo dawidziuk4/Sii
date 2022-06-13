@@ -44,8 +44,14 @@ public class ReservationController {
         return userRepo.getAllRservationsInfo();
     }
 
-    @PutMapping("/user/{login}/makeReservation")
-    public String makeReservation(@RequestBody Reservation reservation, @PathVariable String login) {
+    @PutMapping("/users/makeReservation")
+    public String makeReservation(@RequestBody ReservationInfo reservationInfo) {
+
+        //READING INFORMATION FROM REQUESTBODY
+        Reservation reservation = new Reservation();
+        reservation.setPrelection(reservationInfo.getPrelection());
+        reservation.setTopic(reservationInfo.getTopic());
+        String login = reservationInfo.getLogin();
 
         User user = userRepo.findByLogin(login);
         //CHECKING IF THERE IS SPACE ON THIS PRELECTION
@@ -87,21 +93,27 @@ public class ReservationController {
 
     }
     @DeleteMapping("user/{login}/deleteReservation/{prelection}")
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable String login,@PathVariable int prelection) {
+    public ResponseEntity<String> deleteReservation(@PathVariable String login,@PathVariable int prelection) {
 
             Long id = reservRepo.findIdByPrelectionAndLogin(prelection, login);
+            if (id==null)
+                return new ResponseEntity<>("There is no reservation for this prelection",HttpStatus.OK);
             Optional<Reservation> reserv = reservRepo.findById(id);
             if(reserv.isPresent()){
                 reservRepo.delete(reserv.get());
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>("Reservation has been canceled",HttpStatus.OK);
             }
             else
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            {
+                return new ResponseEntity<>("There is no reservation for this prelection",HttpStatus.NO_CONTENT);
+            }
+
     }
     @GetMapping("/prelection/{nr}")
     public String numOfAttendeesOfSinglePrelection(@PathVariable int nr)
     {
-        float number =reservRepo.countPrelectionAttendance(nr)/4f*100;
+        float maxNumberOfAttendees = 4f;
+        float number =reservRepo.countPrelectionAttendance(nr)/maxNumberOfAttendees*100;
         String string = number+"%";
         return string;
     }
@@ -112,8 +124,9 @@ public class ReservationController {
         String string ="";
         for(int i=1;i<4;i++)
         {
-             float number = reservRepo.countPrelectionAttendance(i)/4f*100;
-             string += "Prelection #"+i+" has "+number + "%\n";
+             float maxNumberOfAttendees = 4f;
+             float number = reservRepo.countPrelectionAttendance(i)/maxNumberOfAttendees*100;
+             string += "Prelection #"+i+" has "+number + "% of maximum spots.\n";
 
         }
         return string;

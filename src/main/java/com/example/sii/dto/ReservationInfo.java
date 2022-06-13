@@ -12,6 +12,7 @@ import lombok.ToString;
 public class ReservationInfo {
 
     private String login;
+    private String email;
     private int prelection;
     private int topic;
 }

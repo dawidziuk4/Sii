@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT new com.example.sii.dto.ReservationInfo(u.login, r.prelection,r.topic) FROM User u JOIN u.reservations r WHERE r.prelection =?1")
+    @Query("SELECT new com.example.sii.dto.ReservationInfo(u.login,u.email, r.prelection,r.topic) FROM User u JOIN u.reservations r WHERE r.prelection =?1")
     public List<ReservationInfo> getSinglePrelectionInfo(Integer prelectionNr);
 
-    @Query("SELECT new com.example.sii.dto.ReservationInfo(u.login, r.prelection,r.topic) FROM User u JOIN u.reservations r ")
+    @Query("SELECT new com.example.sii.dto.ReservationInfo(u.login,u.email, r.prelection,r.topic) FROM User u JOIN u.reservations r ")
     public List<ReservationInfo> getAllRservationsInfo();
 
     public User findByLogin(String login);
