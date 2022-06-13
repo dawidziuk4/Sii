@@ -39,7 +39,8 @@ Updates user that has id = {id}
 PUT /user/{login}/makeReservation
 Make reservation for user {login}. JSON body example:
 {    
-        "prelection": 1
+        "prelection": 1,
+	"topic": 1
 }
 
 PATCH /user/{login}
@@ -52,6 +53,12 @@ Displays info about users attending prelection = {pelection}
 
 GET /prelections
 Displays percantage of antendence of all prelections.
+
+GET /topic/{topic}
+Displays percantage of chosen topic.
+
+GET /topic
+Displays percantage of chosen topics.
 
 GET /prelection/{prelection}
 Displays percantage of antendence of a single prelecton.
